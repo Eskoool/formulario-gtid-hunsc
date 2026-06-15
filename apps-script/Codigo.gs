@@ -21,8 +21,11 @@ var CONFIG = {
   // Nombre de la pestaña de la Hoja donde se registran las filas.
   HOJA: 'Solicitudes',
 
-  // Asunto del correo de aviso.
+  // Asunto del correo de aviso (al grupo).
   ASUNTO: '[GTID HUNSC] Nueva solicitud recibida',
+
+  // Asunto del acuse de recibo (al solicitante).
+  ASUNTO_CONFIRMACION: 'Hemos recibido tu solicitud · Grupo de Innovación Digital HUNSC',
 
   // Orígenes permitidos para CORS. Usa '*' en pruebas; en producción pon el dominio
   // donde alojes index.html (p. ej. 'https://usuario.github.io').
@@ -61,6 +64,9 @@ function doPost(e) {
 
     _registrarEnHoja(datos);
     _enviarCorreo(datos);
+
+    // Acuse de recibo al solicitante. No debe tumbar el envío si falla.
+    try { _enviarConfirmacion(datos); } catch (e) {}
 
     return _json({ ok: true });
   } catch (err) {
@@ -128,6 +134,40 @@ function _enviarCorreo(datos) {
   if (datos.email) opciones.replyTo = datos.email;
 
   MailApp.sendEmail(CONFIG.DESTINATARIO, CONFIG.ASUNTO, lineas.join('\n'), opciones);
+}
+
+// ======================= ACUSE DE RECIBO AL SOLICITANTE =======================
+function _enviarConfirmacion(datos) {
+  if (!datos.email) return;
+
+  var esProyecto = datos.tipo === 'proyecto';
+  var resumen = esProyecto
+    ? 'Proyecto: ' + (datos.p_titulo || '')
+    : 'Consulta: ' + ((datos.c_consulta || '').substring(0, 120));
+
+  var lineas = [];
+  lineas.push('Hola ' + (datos.nombre || '') + ',');
+  lineas.push('');
+  lineas.push('Hemos recibido tu solicitud al Grupo de Trabajo de Innovación Digital del HUNSC.');
+  lineas.push('La revisaremos y te responderemos en un plazo razonable a este mismo correo.');
+  lineas.push('');
+  lineas.push('Resumen de tu solicitud:');
+  lineas.push('  · Tipo: ' + (esProyecto ? 'Propuesta de proyecto' : 'Consulta'));
+  lineas.push('  · ' + resumen);
+  if (datos.enlace) lineas.push('  · Enlace: ' + datos.enlace);
+  lineas.push('');
+  lineas.push('Gracias por tu interés.');
+  lineas.push('Grupo de Trabajo de Innovación Digital');
+  lineas.push('Hospital Universitario Ntra. Sra. de Candelaria · Servicio Canario de la Salud');
+  lineas.push('');
+  lineas.push('— — —');
+  lineas.push('Este es un mensaje automático de confirmación; por favor, no respondas a este correo.');
+
+  var opciones = { name: 'Grupo de Innovación Digital - HUNSC' };
+  // Si responden, que llegue al buzón del grupo.
+  opciones.replyTo = CONFIG.DESTINATARIO;
+
+  MailApp.sendEmail(datos.email, CONFIG.ASUNTO_CONFIRMACION, lineas.join('\n'), opciones);
 }
 
 // ======================= RESPUESTA JSON =======================
