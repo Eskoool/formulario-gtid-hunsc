@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 372 276" role="img" aria-label="Logotipo Hospital Universitario Ntra. Sra. de Candelaria">
+  <!-- Reproducción del distintivo del HUNSC: dos cruces entrelazadas, azul y amarilla -->
+  <!-- Fila 0 -->
+  <rect x="0"   y="0"   width="84" height="84" fill="#213a8f" opacity="0.4"/>
+  <rect x="96"  y="0"   width="84" height="84" fill="#213a8f"/>
+  <rect x="192" y="0"   width="84" height="84" fill="#ffe000"/>
+  <!-- Fila 1 -->
+  <rect x="0"   y="96"  width="84" height="84" fill="#213a8f"/>
+  <rect x="96"  y="96"  width="84" height="84" fill="#213a8f"/>
+  <rect x="192" y="96"  width="84" height="84" fill="#ffe000"/>
+  <rect x="288" y="96"  width="84" height="84" fill="#ffe000"/>
+  <!-- Fila 2 -->
+  <rect x="96"  y="192" width="84" height="84" fill="#213a8f"/>
+  <rect x="192" y="192" width="84" height="84" fill="#ffe000"/>
+  <rect x="288" y="192" width="84" height="84" fill="#ffe000" opacity="0.4"/>
+</svg>

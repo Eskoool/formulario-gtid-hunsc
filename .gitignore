@@ -1,0 +1,11 @@
+# Configuración local de previsualización (no necesaria en el despliegue)
+.claude/
+
+# Sistemas operativos
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+*.swp
