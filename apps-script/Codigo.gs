@@ -52,6 +52,10 @@ var COLUMNAS = [
 // ======================= ENTRADA POST =======================
 function doPost(e) {
   try {
+    // Si se ejecuta a mano desde el editor no hay petición HTTP (e es undefined).
+    if (!e || !e.postData || !e.postData.contents) {
+      return _json({ ok: false, error: 'Sin datos POST. Para probar desde el editor ejecuta la función "probar", no "doPost".' });
+    }
     var datos = JSON.parse(e.postData.contents);
 
     // Validación mínima en servidor.
@@ -77,6 +81,24 @@ function doPost(e) {
 // Comprobación de salud (abrir la URL en el navegador devuelve un OK).
 function doGet() {
   return _json({ ok: true, servicio: 'Formulario GTID HUNSC', estado: 'activo' });
+}
+
+// PRUEBA MANUAL: selecciona "probar" en el editor y pulsa Ejecutar.
+// Simula un envío real → registra una fila y envía los correos. Mira "Registro de ejecución".
+function probar() {
+  var ejemplo = {
+    tipo: 'proyecto',
+    nombre: 'Solicitud de prueba',
+    servicio: 'Servicio de prueba',
+    email: CONFIG.DESTINATARIO,            // el acuse llega a tu propio buzón en la prueba
+    p_titulo: 'Proyecto de prueba',
+    p_fase: 'Idea',
+    p_desc: 'Esto es una prueba del formulario.',
+    enlace: '',
+    _fecha_envio: new Date().toISOString()
+  };
+  var resp = doPost({ postData: { contents: JSON.stringify(ejemplo) } });
+  Logger.log(resp.getContent());
 }
 
 // ======================= REGISTRO EN HOJA =======================
